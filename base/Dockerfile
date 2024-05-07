@@ -2,7 +2,7 @@ ARG BASE_IMAGE="nvidia/cuda:12.2.2-base-ubuntu22.04"
 
 FROM ${BASE_IMAGE}
 
-ARG INCLUDE_PYTHON_DEPS="0"
+ARG INCLUDE_PYTHON_DEPS="1"
 
 USER root
 RUN apt-get update && \
@@ -39,18 +39,16 @@ EXPOSE 22
 
 # install conda environment
 COPY base/environment.yml /tmp/environment.yml
-RUN if [ "$INCLUDE_PYTHON_DEPS" = "1" ]; then \
-    /opt/conda/bin/mamba env create -f /tmp/environment.yml -n default && \
-    /opt/conda/bin/mamba clean -y --all; \
-    fi
+RUN /opt/conda/bin/mamba env create -f /tmp/environment.yml -n default && \
+    /opt/conda/bin/mamba clean -y --all
 RUN rm /tmp/environment.yml
 
 COPY base/requirements.txt /tmp/requirements.txt
-# RUN . /opt/conda/etc/profile.d/conda.sh && \
-#     conda activate default && \
-#     mamba clean -y --all && \
-#     pip install -r /tmp/requirements.txt --no-cache-dir &&\
-#     rm /tmp/requirements.txt
+RUN . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate default && \
+    mamba clean -y --all && \
+    pip install -r /tmp/requirements.txt --no-cache-dir &&\
+    rm /tmp/requirements.txt
 
 COPY user-setup.sh /tmp/user-setup.sh
 
