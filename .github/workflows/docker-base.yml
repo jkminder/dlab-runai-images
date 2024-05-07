@@ -50,7 +50,7 @@ jobs:
         id: push
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
-          context: .
+          context: ./base
           file: ${{ env.CONTEXT }}/Dockerfile
           push: true
           tags: jkminder/dlab-runai-images/base:latest
