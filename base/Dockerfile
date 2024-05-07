@@ -2,6 +2,8 @@ ARG BASE_IMAGE="nvidia/cuda:12.2.2-base-ubuntu22.04"
 
 FROM ${BASE_IMAGE}
 
+ARG NB_USER="user"
+
 USER root
 RUN apt-get update && \
    apt-get install -y  --no-install-recommends  \
@@ -39,5 +41,8 @@ EXPOSE 22
 COPY user-setup.sh /tmp/user-setup.sh
 RUN chmod +x /tmp/user-setup.sh
 
-CMD ["/bin/bash /tmp/user-setup.sh"]
-ENTRYPOINT sudo service ssh start && bash /tmp/user-setup.sh && /bin/bash
+RUN id -u ${NB_USER} || useradd -d /myhome -s /bin/bash ${NB_USER}
+RUN echo "${NB_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+USER ${NB_USER}
+ENTRYPOINT sudo service ssh start && sudo /bin/bash /tmp/user-setup.sh
