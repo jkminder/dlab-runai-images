@@ -5,7 +5,7 @@ name: Base
 env:
   REGISTRY: ghcr.io
   CONTEXT: base
-  IMAGE_NAME: ${{ github.repository }}/${{ env.CONTEXT }}
+  IMAGE_NAME: ${{ github.repository }}/base
 
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
