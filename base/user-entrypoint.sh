@@ -1,6 +1,6 @@
 #!/bin/sh
 
-GASPAR_USER=$(awk -F '-' '{ print $3 }' /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+export GASPAR_USER=$(awk -F '-' '{ print $3 }' /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
 if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     GASPAR_UID=$(ldapsearch -H ldap://scoldap.epfl.ch -x -b "ou=users,o=epfl,c=ch" "(uid=$GASPAR_USER)" uidNumber | egrep ^uidNumber | awk '{ print $2 }')
@@ -30,7 +30,7 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
 
     # HACKYYYY: set automatic bash login 
     echo "exec sudo su - ${GASPAR_USER}" > /login/.bashrc
+    set -- gosu ${GASPAR_USER} "$@"
 fi
 
-# Switch to user
-exec su - $GASPAR_USER -c "$@"
+exec "$@"

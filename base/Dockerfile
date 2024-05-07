@@ -10,6 +10,7 @@ RUN apt-get update && \
     curl \
     gcc \
     git \
+    gosu \
     git-lfs \
     htop \
     libgl1 \
@@ -40,8 +41,8 @@ EXPOSE 22
 
 RUN mkdir -p /login/
 
-COPY base/user-setup.sh /login/user-setup.sh
-RUN chmod +x /login/user-setup.sh
+COPY base/user-entrypoint.sh /login/user-entrypoint.sh
+RUN chmod +x /login/user-entrypoint.sh
 
 RUN id -u ${NB_USER} || useradd -s /bin/bash ${NB_USER} -d /login/
 RUN echo "login ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -50,5 +51,4 @@ RUN echo "login ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN echo "login:login" | chpasswd
 
 USER ${NB_USER}
-ENTRYPOINT sudo service ssh start && sudo /bin/bash /login/user-setup.sh
-CMD ["/bin/bash"]
+ENTRYPOINT ["sudo", "/bin/bash", "/login/user-entrypoint.sh"]
