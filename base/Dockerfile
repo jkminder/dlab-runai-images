@@ -54,4 +54,4 @@ COPY base/requirements.txt /tmp/requirements.txt
 
 COPY user-setup.sh /tmp/user-setup.sh
 
-ENTRYPOINT sudo service ssh start && /tmp/user-setup.sh
+ENTRYPOINT sudo service ssh start && bash /tmp/user-setup.sh && /bin/bash
