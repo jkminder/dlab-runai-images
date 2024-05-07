@@ -1,0 +1,22 @@
+name: "default"
+channels:
+  - conda-forge
+  - pytorch
+  - nvidia
+  - anaconda
+
+dependencies:
+  - python=3.11
+  - tqdm
+  - matplotlib
+  - pandas
+  - anaconda::numpy
+  - anaconda::scipy
+  - h5py
+  - notebook
+  - ipywidgets
+  - wandb
+  - pytorch::pytorch
+  - pytorch::pytorch-cuda=12.1
+  - lovely-tensors
+prefix: "/opt/conda"
