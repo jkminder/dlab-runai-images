@@ -37,5 +37,7 @@ RUN ssh-keygen -A
 EXPOSE 22
 
 COPY user-setup.sh /tmp/user-setup.sh
+RUN chmod +x /tmp/user-setup.sh
 
+CMD ["/bin/bash /tmp/user-setup.sh"]
 ENTRYPOINT sudo service ssh start && bash /tmp/user-setup.sh && /bin/bash
