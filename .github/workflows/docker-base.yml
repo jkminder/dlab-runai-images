@@ -53,5 +53,5 @@ jobs:
           context: .
           file: ${{ env.CONTEXT }}/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: jkminder/dlab-runai-images/base:latest
           labels: ${{ steps.meta.outputs.labels }}
