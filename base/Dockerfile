@@ -2,7 +2,7 @@ ARG BASE_IMAGE="nvidia/cuda:12.2.2-base-ubuntu22.04"
 
 FROM ${BASE_IMAGE}
 
-ARG NB_USER="user"
+ARG NB_USER="root"
 
 USER root
 RUN apt-get update && \
@@ -41,8 +41,7 @@ EXPOSE 22
 COPY base/user-setup.sh /tmp/user-setup.sh
 RUN chmod +x /tmp/user-setup.sh
 
-RUN id -u ${NB_USER} || useradd -d /myhome -s /bin/bash ${NB_USER}
-RUN echo "${NB_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN mkdir -p /root/ 
 
 USER ${NB_USER}
 ENTRYPOINT sudo service ssh start && sudo /bin/bash /tmp/user-setup.sh && /bin/bash

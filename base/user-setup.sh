@@ -1,8 +1,8 @@
 #!/bin/sh
 
-GASPAR_USER=$(awk -F '-' '{ print $3 }' /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+GASPAR_USER=jminder #$(awk -F '-' '{ print $3 }' /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
-if [ $(id -u user) -eq 1000 ]; then
+if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     GASPAR_UID=$(ldapsearch -H ldap://scoldap.epfl.ch -x -b "ou=users,o=epfl,c=ch" "(uid=$GASPAR_USER)" uidNumber | egrep ^uidNumber | awk '{ print $2 }')
     GASPAR_GID=$(ldapsearch -H ldap://scoldap.epfl.ch -x -b "ou=users,o=epfl,c=ch" "(uid=$GASPAR_USER)" gidNumber | egrep ^gidNumber | awk '{ print $2 }')
     GASPAR_SUPG=$(ldapsearch -LLL -H ldap://scoldap.epfl.ch -x -b ou=groups,o=epfl,c=ch \(memberUid=${GASPAR_USER}\) gidNumber | grep 'gidNumber:' | awk '{ print $2 }' | paste -s -d' ' -)
@@ -21,15 +21,13 @@ if [ $(id -u user) -eq 1000 ]; then
         mkdir -p $USER_HOME
     fi
 
-    # usermod change the uid
-    usermod -u ${GASPAR_UID} user
-    # usermod change the gid
-    usermod -g ${GASPAR_GID} user
-    # usermod change the home directory
-    usermod -d $USER_HOME user
-    # usermod add to groups
-    usermod -aG $(echo $GASPAR_SUPG | tr ' ' ',') user
+    # Create User and add to groups
+    useradd -u ${GASPAR_UID} -d $USER_HOME -s /bin/bash ${GASPAR_USER} -g ${GASPAR_GID}     
+    usermod -aG $(echo $GASPAR_SUPG | tr ' ' ',') ${GASPAR_USER}
+
+    # passwordless sudo
+    echo "${GASPAR_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 fi
 
 # Switch to user
-su - user
+exec su - $GASPAR_USER
