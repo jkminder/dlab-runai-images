@@ -37,12 +37,6 @@ RUN wget -O /tmp/Miniforge3.sh "https://github.com/conda-forge/miniforge/release
 RUN ssh-keygen -A
 EXPOSE 22
 
-# handle the NB_USER setup and set home directory to /myhome
-RUN id -u ${NB_USER} || useradd -d /myhome -s /bin/bash ${NB_USER} && usermod -a -G ${NB_USER} ${NB_USER}
- 
-# passwordless sudo
-RUN echo "${NB_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
 # install conda environment
 COPY base/environment.yml /tmp/environment.yml
 RUN if [ "$INCLUDE_PYTHON_DEPS" = "1" ]; then \
@@ -50,6 +44,13 @@ RUN if [ "$INCLUDE_PYTHON_DEPS" = "1" ]; then \
     /opt/conda/bin/mamba clean -y --all; \
     fi
 RUN rm /tmp/environment.yml
+
+COPY base/requirements.txt /tmp/requirements.txt
+RUN . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate default && \
+    mamba clean -y --all && \
+    pip install -r /tmp/requirements.txt --no-cache-dir &&\
+    rm /tmp/requirements.txt
 
 COPY user-setup.sh /tmp/user-setup.sh
 
