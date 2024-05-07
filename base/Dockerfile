@@ -46,11 +46,11 @@ RUN if [ "$INCLUDE_PYTHON_DEPS" = "1" ]; then \
 RUN rm /tmp/environment.yml
 
 COPY base/requirements.txt /tmp/requirements.txt
-RUN . /opt/conda/etc/profile.d/conda.sh && \
-    conda activate default && \
-    mamba clean -y --all && \
-    pip install -r /tmp/requirements.txt --no-cache-dir &&\
-    rm /tmp/requirements.txt
+# RUN . /opt/conda/etc/profile.d/conda.sh && \
+#     conda activate default && \
+#     mamba clean -y --all && \
+#     pip install -r /tmp/requirements.txt --no-cache-dir &&\
+#     rm /tmp/requirements.txt
 
 COPY user-setup.sh /tmp/user-setup.sh
 
