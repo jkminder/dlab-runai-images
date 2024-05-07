@@ -48,5 +48,5 @@ jobs:
           context: .
           file: ${{ env.CONTEXT }}/Dockerfile
           push: true
-          tags: latest
+          tags: user/image:latest
           labels: ${{ steps.meta.outputs.labels }}
