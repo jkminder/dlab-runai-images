@@ -1,6 +1,8 @@
 #!/bin/sh
 
-export GASPAR_USER=$(awk -F '-' '{ print $3 }' /var/run/secrets/kubernetes.io/serviceaccount/namespace)
+set -e
+
+GASPAR_USER=$(awk -F '-' '{ print $3 }' /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
 if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     GASPAR_UID=$(ldapsearch -H ldap://scoldap.epfl.ch -x -b "ou=users,o=epfl,c=ch" "(uid=$GASPAR_USER)" uidNumber | egrep ^uidNumber | awk '{ print $2 }')
@@ -24,13 +26,15 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     # Create User and add to groups
     useradd -u ${GASPAR_UID} -d $USER_HOME -s /bin/bash ${GASPAR_USER} -g ${GASPAR_GID}     
     usermod -aG $(echo $GASPAR_SUPG | tr ' ' ',') ${GASPAR_USER}
+    if ! [ -d "$SCRATCH" ]; then
+        chown -R ${GASPAR_USER}:${GASPAR_GID} $USER_HOME
+    fi
 
     # passwordless sudo
     echo "${GASPAR_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
     # HACKYYYY: set automatic bash login 
     echo "exec sudo su - ${GASPAR_USER}" > /login/.bashrc
-    set -- gosu ${GASPAR_USER} "$@"
 fi
-
-exec "$@"
+echo "exec gosu ${GASPAR_USER} $@"
+exec gosu ${GASPAR_USER} "$@"

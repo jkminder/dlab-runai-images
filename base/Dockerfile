@@ -46,9 +46,11 @@ RUN chmod +x /login/user-entrypoint.sh
 
 RUN id -u ${NB_USER} || useradd -s /bin/bash ${NB_USER} -d /login/
 RUN echo "login ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN chown -R ${NB_USER}:${NB_USER} /login/
 
 # set password for user
 RUN echo "login:login" | chpasswd
 
 USER ${NB_USER}
 ENTRYPOINT ["sudo", "/bin/bash", "/login/user-entrypoint.sh"]
+CMD ["/bin/bash"]
