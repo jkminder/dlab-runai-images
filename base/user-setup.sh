@@ -33,4 +33,4 @@ fi
 
 # Switch to user
 su - user
-exec "$@"
+exec /bin/bash "$@"
