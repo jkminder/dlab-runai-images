@@ -2,7 +2,7 @@ ARG BASE_IMAGE="nvidia/cuda:12.2.2-base-ubuntu22.04"
 
 FROM ${BASE_IMAGE}
 
-ARG NB_USER="root"
+ARG NB_USER="login"
 
 USER root
 RUN apt-get update && \
@@ -38,10 +38,16 @@ RUN . /opt/conda/etc/profile.d/conda.sh
 RUN ssh-keygen -A
 EXPOSE 22
 
-COPY base/user-setup.sh /tmp/user-setup.sh
-RUN chmod +x /tmp/user-setup.sh
+RUN mkdir -p /login/
 
-RUN mkdir -p /root/ 
+COPY base/user-setup.sh /login/user-setup.sh
+RUN chmod +x /login/user-setup.sh
+
+RUN id -u ${NB_USER} || useradd -s /bin/bash ${NB_USER} -d /login/
+RUN echo "login ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+# set password for user
+RUN echo "login:login" | chpasswd
 
 USER ${NB_USER}
-ENTRYPOINT sudo service ssh start && sudo /bin/bash /tmp/user-setup.sh && /bin/bash
+ENTRYPOINT sudo service ssh start && sudo /bin/bash /login/user-setup.sh
