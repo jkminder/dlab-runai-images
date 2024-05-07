@@ -28,9 +28,9 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     # passwordless sudo
     echo "${GASPAR_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-    # set automatic login
+    # HACKYYYY: set automatic bash login 
     echo "exec sudo su - ${GASPAR_USER}" > /login/.bashrc
 fi
 
 # Switch to user
-exec su - $GASPAR_USER 
+exec su - $GASPAR_USER -c "$@"

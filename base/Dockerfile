@@ -51,3 +51,4 @@ RUN echo "login:login" | chpasswd
 
 USER ${NB_USER}
 ENTRYPOINT sudo service ssh start && sudo /bin/bash /login/user-setup.sh
+CMD ["/bin/bash"]
