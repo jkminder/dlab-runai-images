@@ -10,7 +10,10 @@ env:
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
   push:
-    branches: ['master']
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
@@ -48,5 +51,5 @@ jobs:
           context: .
           file: ${{ env.CONTEXT }}/Dockerfile
           push: true
-          tags: user/image:latest
+          tags: {{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
