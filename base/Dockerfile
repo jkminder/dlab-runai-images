@@ -38,7 +38,7 @@ RUN . /opt/conda/etc/profile.d/conda.sh
 RUN ssh-keygen -A
 EXPOSE 22
 
-COPY ./user-setup.sh /tmp/user-setup.sh
+COPY base/user-setup.sh /tmp/user-setup.sh
 RUN chmod +x /tmp/user-setup.sh
 
 RUN id -u ${NB_USER} || useradd -d /myhome -s /bin/bash ${NB_USER}
