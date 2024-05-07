@@ -45,4 +45,4 @@ RUN id -u ${NB_USER} || useradd -d /myhome -s /bin/bash ${NB_USER}
 RUN echo "${NB_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER ${NB_USER}
-ENTRYPOINT sudo service ssh start && sudo /bin/bash /tmp/user-setup.sh
+ENTRYPOINT sudo service ssh start && sudo /bin/bash /tmp/user-setup.sh && /bin/bash
