@@ -37,9 +37,9 @@ RUN . /opt/conda/etc/profile.d/conda.sh
 RUN ssh-keygen -A
 EXPOSE 22
 
-COPY base/user-entrypoint.sh /login/user-entrypoint.sh
-RUN chmod +x /login/user-entrypoint.sh
+COPY base/user-entrypoint.sh /tmp/user-entrypoint.sh
+COPY base/.bashrc /tmp/.bashrc
+RUN chmod +x /tmp/user-entrypoint.sh
 
-
-ENTRYPOINT ["/login/user-entrypoint.sh"]
-CMD ["/bin/bash --login"]
+ENTRYPOINT ["/tmp/user-entrypoint.sh"]
+CMD ["/bin/bash"]

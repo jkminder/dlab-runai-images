@@ -34,8 +34,14 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     echo "${GASPAR_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
     # HACKYYYY: set automatic bash login 
     echo "exec gosu ${GASPAR_USER} /bin/bash" > /root/.bashrc
-fi
 
+
+    # .bashrc for user
+    if [ ! -f "$USER_HOME/.bashrc" ]; then
+        cp /tmp/.bashrc "$USER_HOME/.bashrc"
+        chown ${GASPAR_USER}:${GASPAR_GID} $USER_HOME/.bashrc
+    fi
+fi
 
 if [ -z "$1" ]; then
     exec gosu ${GASPAR_USER} /bin/bash
