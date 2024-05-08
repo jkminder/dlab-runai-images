@@ -37,11 +37,9 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
 
 
     # .bashrc for user
-    if [ ! -f "$USER_HOME/.bashrc" ]; then
-        chown ${GASPAR_USER}:${GASPAR_GID} /tmp/.bashrc
-        su ${GASPAR_USER} -c "cp /tmp/.bashrc '$USER_HOME/.bashrc'"
+    chown ${GASPAR_USER}:${GASPAR_GID} /tmp/.bashrc
+        su ${GASPAR_USER} -c "if [ ! -f "$USER_HOME/.bashrc" ]; then cp /tmp/.bashrc '$USER_HOME/.bashrc'; fi"
     fi
-fi
 
 if [ -z "$1" ]; then
     exec gosu ${GASPAR_USER} /bin/bash
