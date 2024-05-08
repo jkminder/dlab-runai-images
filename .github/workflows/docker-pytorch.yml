@@ -4,8 +4,9 @@ name: pytorch
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
   CONTEXT: pytorch
+  IMAGE_NAME: ${{ github.repository }}/pytorch
+
 
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
@@ -48,5 +49,5 @@ jobs:
           context: .
           file: ${{ env.CONTEXT }}/Dockerfile
           push: true
-          tags: latest
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
