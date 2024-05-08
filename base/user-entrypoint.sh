@@ -2,6 +2,8 @@
 
 set -e
 
+touch .entrypoint-ran
+
 GASPAR_USER=$(awk -F '-' '{ print $3 }' /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
 if ! id -u $GASPAR_USER > /dev/null 2>&1; then
@@ -35,6 +37,8 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     # HACKYYYY: set automatic bash login 
     echo "exec gosu ${GASPAR_USER} /bin/bash" > /root/.bashrc
 fi
+
+echo $@ > /tmp/entrypoint-args
 
 if [ -z "$1" ]; then
     echo "No command provided, starting bash"
