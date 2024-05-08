@@ -32,9 +32,13 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
 
     # passwordless sudo
     echo "${GASPAR_USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-
     # HACKYYYY: set automatic bash login 
-    echo "exec sudo su - ${GASPAR_USER}" > /login/.bashrc
+    echo "exec gosu ${GASPAR_USER} /bin/bash" > /root/.bashrc
 fi
-echo "exec gosu ${GASPAR_USER} $@"
-exec gosu ${GASPAR_USER} "$@"
+
+if [ -z "$1" ]; then
+    echo "No command provided, starting bash"
+    exec gosu ${GASPAR_USER} /bin/bash
+else
+    exec gosu ${GASPAR_USER} "$@"
+fi
