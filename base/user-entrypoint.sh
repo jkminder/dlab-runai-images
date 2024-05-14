@@ -2,6 +2,10 @@
 
 set -e
 
+# start sshd
+service ssh start
+
+# Setup GASPAR USER
 GASPAR_USER=$(awk -F '-' '{ print $3 }' /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
 if ! id -u $GASPAR_USER > /dev/null 2>&1; then
