@@ -41,5 +41,6 @@ COPY base/user-entrypoint.sh /tmp/user-entrypoint.sh
 COPY base/.bashrc /tmp/.bashrc
 RUN chmod +x /tmp/user-entrypoint.sh
 
+RUN service ssh start
 ENTRYPOINT ["/tmp/user-entrypoint.sh"]
 CMD ["/bin/bash"]
