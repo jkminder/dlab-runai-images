@@ -21,7 +21,7 @@ runai submit -i ghcr.io/jkminder/dlab-runai-images/base:master --pvc runai-dlab-
 ## Caveats
 - Don't add the `--command` flag to runai submit. This will overwrite the script that sets up your GASPAR user. 
 - You can't login to a root bash session (with `su -`). You have password less `sudo` rights on your GASPAR user, use this. 
-- If you already have a `.bashrc` file in `/dlabscratch1/dlabscratch1/{GASPAR_USERNAME}`, please copy the contents of [`base/.bashrc`](base/.bashrc) to your file. This has to be done, because the script won't generate it if there is already an existing one.
+- If you already have a `.bashrc` file in `/dlabscratch1/dlabscratch1/{GASPAR_USERNAME}`, please copy the contents of [`base/.bashrc`](base/.bashrc) to your file. This is necessary because the script does not create it if one already exists.
 
 
 ## First Time Instructions
