@@ -62,5 +62,6 @@ alias dlab='echo "
 
 # check whether the conda env default exists and activate it
 conda activate default > /dev/null 2>&1
-
+# cd to the home directory
+cd ~
 dlab

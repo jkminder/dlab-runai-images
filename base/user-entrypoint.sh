@@ -14,7 +14,6 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     GASPAR_SUPG=$(ldapsearch -LLL -H ldap://scoldap.epfl.ch -x -b ou=groups,o=epfl,c=ch \(memberUid=${GASPAR_USER}\) gidNumber | grep 'gidNumber:' | awk '{ print $2 }' | paste -s -d' ' -)
 
 
-    echo "Creating user $GASPAR_USER with UID $GASPAR_UID and GID $GASPAR_GID"
     # Create Groups
     for gid in $GASPAR_SUPG; do
         GROUP_NAME=$(ldapsearch -LLL -H ldap://scoldap.epfl.ch -x -b ou=groups,o=epfl,c=ch \(gidNumber=$gid\) cn | egrep ^cn | awk '{ print $2 }')
