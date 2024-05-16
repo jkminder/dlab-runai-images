@@ -48,9 +48,9 @@ I added a few aliases that makes life a bit easier. Source them in your `.bashrc
 
 Available Aliases:
 - `rl`: Short for `runai list`
-- `rb`: Short for `runai bash``
+- `rb`: Short for `runai bash`
 
-    **Usage:** `rb container-name``
+    **Usage:** `rb container-name`
 - `rdj`: Short for `runai delete job`
 
     **Usage:** `rdj container-name`
