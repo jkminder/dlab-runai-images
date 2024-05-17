@@ -10,7 +10,7 @@ There are currently two images available:
     - Has CUDA 12.2.2 installed. 
     - Has [Powershell GO](https://github.com/justjanne/powerline-go/) installed, a shell wrapper that makes life a bit easier.
     - Automatically generates a `.bashrc` file in your $HOME if you don't have one.
-- **pytorch**: `ghcr.io/jkminder/dlab-runai-images/base:master` 
+- **pytorch**: `ghcr.io/jkminder/dlab-runai-images/pytorch:master` 
     - Creates `default` conda environment with pytorch and other default ML python libraries installed. See `pytorch/environment.yml` and `pytorch/requirements.txt` for an exhaustive list.
 
 Example RUNAI command (replace `{GASPAR_USERNAME}`):
