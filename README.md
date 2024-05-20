@@ -6,7 +6,7 @@ There are currently two images available:
 - **base**: `ghcr.io/jkminder/dlab-runai-images/base:master`
     - Logs you in with your GASPAR UID/GUID and sets the correct permissions
     - Installs basic packages (conda, htop, vim, ssh, etc.). 
-    - Should `dlabscratch` be mapped, it sets your $HOME to `/dlabscratch1/dlabscratch1/{GASPAR_USERNAME}`.
+    - Should `dlabscratch` be mapped, it sets your $HOME to `/dlabscratch1/{GASPAR_USERNAME}`.
     - Has CUDA 12.2.2 installed. 
     - Has [Powershell GO](https://github.com/justjanne/powerline-go/) installed, a shell wrapper that makes life a bit easier.
     - Automatically generates a `.bashrc` file in your $HOME if you don't have one.
@@ -15,35 +15,36 @@ There are currently two images available:
 
 
 ## How to submit jobs
-Use the `runai submit {JOB_NAME} -i {IMAGE} -- {COMMAND}` command. To map the scratch partition add the flag `--pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1`. If you plan on iteractively using the container add the `--interactive` flag. This will give you priority in the queue, but be sure to only add it if you need interactive jobs. With `-g {num}` you can select the number of GPUS, with `--cpu {num}` the number of CPUs. The flag `--memory 10G` will allocate you at least 10G of RAM. Should you run into shared memory issues, add the flag `--large-shm` (sometimes required for massively parallel dataloaders). With `--node-type G10` you select the node type. 
+Use the `runai submit {JOB_NAME} -i {IMAGE} -- {COMMAND}` command. To map the scratch partition add the flag `--pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt`. If you plan on iteractively using the container add the `--interactive` flag. This will give you priority in the queue, but be sure to only add it if you need interactive jobs. With `-g {num}` you can select the number of GPUS, with `--cpu {num}` the number of CPUs. The flag `--memory 10G` will allocate you at least 10G of RAM. Should you run into shared memory issues, add the flag `--large-shm` (sometimes required for massively parallel dataloaders). With `--node-type G10` you select the node type. 
 
 A few examples:
 
 **Submit an interactive job which runs for 1 hour with the name `test` with 1 GPU.**
 ```
-runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1 --interactive -g 1.0 test -- sleep 3600
+runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt --interactive -g 1.0 test -- sleep 3600
 ```
 **Submit a training job with the name `train` with 0.5 GPU.**
 ```
-runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1 -g 0.5 train -- python ~/trainer/train.py --my-training-arg 2
+runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt -g 0.5 train -- python ~/trainer/train.py --my-training-arg 2
 ```
 **Submit an interactive job which runs for 2 hour with the name `test` with 0.5 GPU and at least 12 CPUs**
 ```
-runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1 -g 0.5 --cpu 12 test -- sleep 3600
+runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt -g 0.5 --cpu 12 test -- sleep 3600
 ```
-I strongly recommend creating some aliases/shell scripts to make your life easier, e.g. `alias rs="runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1"`. See [RUNAI ALIASES](#runai-aliases).
+I strongly recommend creating some aliases/shell scripts to make your life easier, e.g. `alias rs="runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt"`. See [RUNAI ALIASES](#runai-aliases). Alternatively use the [`submit.sh`](submit.sh) script (replace the ENVS in the file first).
+
 For a detailed instruction manual on the `runai submit` command, see [here](https://docs.run.ai/v2.9/Researcher/cli-reference/runai-submit/#-pvc-storage_class_namesizecontainer_mount_pathro).
 
 
 ## Caveats
 - Don't add the `--command` flag to runai submit. This will overwrite the script that sets up your GASPAR user. 
 - You can't login to a root bash session (with `su -`). You have password less `sudo` rights on your GASPAR user, use this. 
-- If you already have a `.bashrc` file in `/dlabscratch1/dlabscratch1/{GASPAR_USERNAME}`, please copy the contents of [`base/.bashrc`](base/.bashrc) to your file. This is necessary because the script does not create it if one already exists.
+- If you already have a `.bashrc` file in `/dlabscratch1/{GASPAR_USERNAME}`, please copy the contents of [`base/.bashrc`](base/.bashrc) to your file. This is necessary because the script does not create it if one already exists.
 
 
 ## First Time Instructions
 The following steps have to be done once.
-- Start a container or use ssh to connect directly to the IC cluster and create the file `.ssh/authorized_keys` in your folder on scratch (`/dlabscratch1/dlabscratch1/{GASPAR_USERNAME}`). Paste your public ssh key (see [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) for a tutorial on creating ssh keys).
+- Start a container or use ssh to connect directly to the IC cluster and create the file `.ssh/authorized_keys` in your folder on scratch (`/dlabscratch1/{GASPAR_USERNAME}`). Paste your public ssh key (see [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) for a tutorial on creating ssh keys).
 - On your local computer append the following lines to your `~/.ssh/config` file:
     ```YAML
         Host runai
@@ -74,7 +75,7 @@ Available Aliases:
 - `rpf`: Portforward to your container. Especially useful for VS Code usage.
    
    **Usage:** `rpf container-name`
-- `rs`: Short for `runai submit -i {image} --pvc runai-dlab-{GASPAR_NAME}-scratch:/dlabscratch1`. Make sure you adapt this to your needs by replacing the image and the ´{GASPAR_USERNAME}´ in the `.runai_aliases` file.
+- `rs`: Short for `runai submit -i {image} --pvc runai-dlab-{GASPAR_NAME}-scratch:/mnt`. Make sure you adapt this to your needs by replacing the image and the ´{GASPAR_USERNAME}´ in the `.runai_aliases` file.
    
    **Usage:** `rs --interactive -g 1.0 eval -- sleep 3600`
 - `ric`: Switches the context to the IC cluster. Short for `runai config cluster ic-caas`
