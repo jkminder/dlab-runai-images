@@ -25,10 +25,20 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     done
 
     # Create DLAB Home Directory
-    SCRATCH=/dlabscratch1/dlabscratch1
-    if [ -d "$SCRATCH" ]; then
-        USER_HOME=$SCRATCH/$GASPAR_USER
+    # First determine where the scratch is mounted
+    SCRATCH=dlabscratch1
+    if [ -d "/dlabscratch1/$SCRATCH" ]; then
+        # Mounted on /dlabscratch1/$SCRATCH -> set home and do nothing
+        USER_HOME=/dlabscratch1/$SCRATCH/$GASPAR_USER
+    else if [ -d "/mnt/$SCRATCH" ]; then
+        # Mounted on /mnt/$SCRATCH -> symlink to /dlabscratch1
+        ln -s /mnt/$SCRATCH /dlabscratch1
+        USER_HOME=/$SCRATCH/$GASPAR_USER
+    else if [ -d "/$SCRATCH/$GASPAR_USER" ]; then
+        # Mounted on /$SCRATCH/$GASPAR_USER -> do nothing
+        USER_HOME=/$SCRATCH/$GASPAR_USER
     else
+        # No scratch mounted -> create home in /home
         USER_HOME=/home/${GASPAR_USER}
         mkdir -p $USER_HOME
     fi
