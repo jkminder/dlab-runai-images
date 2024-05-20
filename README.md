@@ -32,7 +32,7 @@ runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dl
 runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1 -g 0.5 --cpu 12 test -- sleep 3600
 ```
 I strongly recommend creating some aliases/shell scripts to make your life easier, e.g. `alias rs="runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1"`. See [RUNAI ALIASES](#runai-aliases).
-For a detailed instruction manual on its use, see [here](https://docs.run.ai/v2.9/Researcher/cli-reference/runai-submit/#-pvc-storage_class_namesizecontainer_mount_pathro).
+For a detailed instruction manual on the `runai submit` command, see [here](https://docs.run.ai/v2.9/Researcher/cli-reference/runai-submit/#-pvc-storage_class_namesizecontainer_mount_pathro).
 
 
 ## Caveats
