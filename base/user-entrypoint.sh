@@ -41,7 +41,7 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
         # No scratch mounted -> create home in /home
         USER_HOME=/home/${GASPAR_USER}
         mkdir -p $USER_HOME
-    fi
+    fi fi fi
 
     # Create User and add to groups
     useradd -u ${GASPAR_UID} -d $USER_HOME -s /bin/bash ${GASPAR_USER} -g ${GASPAR_GID}     
