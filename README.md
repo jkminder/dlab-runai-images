@@ -13,10 +13,27 @@ There are currently two images available:
 - **pytorch**: `ghcr.io/jkminder/dlab-runai-images/pytorch:master` 
     - Creates `default` conda environment with pytorch and other default ML python libraries installed. See `pytorch/environment.yml` and `pytorch/requirements.txt` for an exhaustive list.
 
-Example RUNAI command (replace `{GASPAR_USERNAME}`):
-```bash
-runai submit -i ghcr.io/jkminder/dlab-runai-images/base:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1 --interactive test -- sleep 3600
+
+## How to submit jobs
+Use the `runai submit {JOB_NAME} -i {IMAGE} -- {COMMAND}` command. To map the scratch partition add the flag `--pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1`. If you plan on iteractively using the container add the `--interactive` flag. This will give you priority in the queue, but be sure to only add it if you need interactive jobs. With `-g {num}` you can select the number of GPUS, with `--cpu {num}` the number of CPUs. The flag `--memory 10G` will allocate you at least 10G of RAM. Should you run into shared memory issues, add the flag `--large-shm` (sometimes required for massively parallel dataloaders). With `--node-type G10` you select the node type. 
+
+A few examples:
+
+**Submit an interactive job which runs for 1 hour with the name `test` with 1 GPU.**
 ```
+runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1 --interactive -g 1.0 test -- sleep 3600
+```
+**Submit a training job with the name `train` with 0.5 GPU.**
+```
+runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1 -g 0.5 train -- python ~/trainer/train.py --my-training-arg 2
+```
+**Submit an interactive job which runs for 2 hour with the name `test` with 0.5 GPU and at least 12 CPUs**
+```
+runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1 -g 0.5 --cpu 12 test -- sleep 3600
+```
+I strongly recommend creating some aliases/shell scripts to make your life easier, e.g. `alias rs="runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/dlabscratch1"`. See [RUNAI ALIASES](#runai-aliases).
+For a detailed instruction manual on its use, see [here](https://docs.run.ai/v2.9/Researcher/cli-reference/runai-submit/#-pvc-storage_class_namesizecontainer_mount_pathro).
+
 
 ## Caveats
 - Don't add the `--command` flag to runai submit. This will overwrite the script that sets up your GASPAR user. 
