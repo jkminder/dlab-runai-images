@@ -64,4 +64,4 @@ alias dlab='echo "
 conda activate default > /dev/null 2>&1
 dlab
 # go to the home directory if at the root
-[ "$(pwd)" != "/" ] && cd ~
+[ "$(pwd)" = "/" ] && cd ~
