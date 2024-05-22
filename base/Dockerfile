@@ -24,7 +24,7 @@ RUN apt-get update && \
     unzip \
     vim \
     ldap-utils \
-    tmux \
+    nvtop \
     wget && \
     wget -q  https://github.com/justjanne/powerline-go/releases/download/v1.24/powerline-go-linux-"$(dpkg --print-architecture)" -O /usr/local/bin/powerline-shell && \
     chmod a+x /usr/local/bin/powerline-shell
