@@ -4,3 +4,4 @@ transformer_lens
 tokenizers
 torchdata
 lightning-bolts
+pytorch-ignite
