@@ -16,3 +16,5 @@ RUN . /opt/conda/etc/profile.d/conda.sh && \
     pip install -r /tmp/requirements.txt --no-cache-dir &&\
     rm /tmp/requirements.txt
 
+# make sure conda is writable
+RUN chmod -R 777 /opt/conda
