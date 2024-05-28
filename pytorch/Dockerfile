@@ -14,7 +14,5 @@ RUN . /opt/conda/etc/profile.d/conda.sh && \
     conda activate default && \
     mamba clean -y --all && \
     pip install -r /tmp/requirements.txt --no-cache-dir &&\
-    rm /tmp/requirements.txt
-
-# make sure conda is writable
-RUN chmod -R 777 /opt/conda
+    rm /tmp/requirements.txt && \
+    chmod -R 777 /opt/conda/envs/default
