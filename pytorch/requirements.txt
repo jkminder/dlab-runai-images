@@ -5,3 +5,4 @@ tokenizers
 torchdata
 lightning-bolts
 pytorch-ignite
+loguru
