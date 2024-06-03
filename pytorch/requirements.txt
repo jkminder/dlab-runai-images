@@ -7,3 +7,4 @@ lightning-bolts
 pytorch-ignite
 loguru
 hydra-core
+nnsight
