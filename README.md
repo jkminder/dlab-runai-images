@@ -31,6 +31,18 @@ runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dl
 ```
 runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt -g 0.5 --cpu 12 test -- sleep 3600
 ```
+
+**Submit a job with a specific node type**
+Node types
+* ICC: [S8|G9|G10]  "S8" (CPU only), "G9" (Nvidia V100) or "G10" (Nvidia A100)
+* RCP: there is only one node type
+
+```
+runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt --interactive -g 1.0 --node-type G10 test -- sleep 3600
+```
+
+ 
+
 I strongly recommend creating some aliases/shell scripts to make your life easier, e.g. `alias rs="runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt"`. See [RUNAI ALIASES](#runai-aliases). Should your shell not support aliases, use the [`submit.sh`](submit.sh) script (replace the ENVS in the file first).
 
 For a detailed instruction manual on the `runai submit` command, see [here](https://docs.run.ai/v2.9/Researcher/cli-reference/runai-submit/#-pvc-storage_class_namesizecontainer_mount_pathro).
