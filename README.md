@@ -91,7 +91,7 @@ Available Aliases:
    
    **Usage:** `rs --interactive -g 1.0 eval -- sleep 3600`
 - `ric`: Switches the context to the IC cluster. Short for `runai config cluster ic-caas`
-- `rrcp`: Switches the context to the RCP cluster. Short for `runai config cluster ic-caas`
+- `rrcp`: Switches the context to the RCP cluster. Short for `runai config cluster rcp-caas-test`
 
 
 ## Customization
