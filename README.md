@@ -72,6 +72,20 @@ The following steps have to be done once.
 - Check out [RUNAI ALIASES](#runai-aliases)
 - If you want to customize the images, look at [Customization](#customization)
 
+
+## Connecting to VScode
+In order to connect to vscode you need to run:
+```
+kubectl port-forward %name%-0-0 2222:22
+```
+where name is your runai job name.
+
+Then you can launch VScode and connect to your `runai` ssh host or run:
+```
+code --remote ssh-remote+%name% /dlabscratch1/path/to/your/project
+```
+
+
 ## RUNAI Aliases
 
 I added a few aliases that makes life a bit easier. Source them in your `.bashrc` (or whatever shell your using) by adding the line `source {pathtothisrepo}/.runai_aliases` to it. 
