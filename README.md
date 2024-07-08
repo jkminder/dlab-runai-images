@@ -78,7 +78,7 @@ In order to connect to vscode you need to run:
 ```
 kubectl port-forward %name%-0-0 2222:22
 ```
-where name is your runai job name.
+where name is your runai job name. Should you have the [RUNAI ALIASES](#runai-aliases) installed, this is shortened to `rpf %name%`.
 
 Then you can launch VScode and connect to your `runai` ssh host or run:
 ```
