@@ -82,9 +82,8 @@ where name is your runai job name. Should you have the [RUNAI ALIASES](#runai-al
 
 Then you can launch VScode and connect to your `runai` ssh host or run:
 ```
-code --remote ssh-remote+%name% /dlabscratch1/path/to/your/project
+code --remote ssh-remote+runai /dlabscratch1/path/to/your/project
 ```
-
 
 ## RUNAI Aliases
 
