@@ -19,5 +19,5 @@ matplotlib
 trl==0.8.3 
 peft==0.11.1 
 accelerate==0.30.1
-bitsandbytes==0.43.1
+bitsandbytes==0.42.0
 datasets==2.18.0
