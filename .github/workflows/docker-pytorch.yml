@@ -8,7 +8,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}/pytorch
 
 
-# Configures this workflow to run every time a change is pushed to the branch called `release`.
+# Configures this workflow to run every time the "base" workflow was successfully completed
 on:
   workflow_run:
     workflows: ["base"]
