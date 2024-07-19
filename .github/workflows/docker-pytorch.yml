@@ -8,10 +8,12 @@ env:
   IMAGE_NAME: ${{ github.repository }}/pytorch
 
 
-# Configures this workflow to run every time a change is pushed to the branch called `release`.
+# Configures this workflow to run every time the "base" workflow was successfully completed
 on:
-  push:
-    branches: ['master']
+  workflow_run:
+    workflows: ["base"]
+    types:
+      - completed
 
 # There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
