@@ -63,7 +63,7 @@ The following steps have to be done once.
             HostName localhost
             User {GASPAR_USERNAME}
             ForwardAgent yes
-            IdentityFile {PATH_TO_YOUR_PUBLIC_KEY}
+            IdentityFile {PATH_TO_YOUR_PRIVATE_KEY}
             StrictHostKeyChecking no
             UserKnownHostsFile=/dev/null
             Port 2222
