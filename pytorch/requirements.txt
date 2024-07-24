@@ -9,6 +9,8 @@ loguru
 hydra-core
 nnsight
 safetensors
+transformers
+datasets
 pyyaml
 wandb
 numpy
