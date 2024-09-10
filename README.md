@@ -141,14 +141,6 @@ The installation script sets up several useful aliases. These are stored in the 
 - You can't login to a root bash session (with `su -`). You have password less `sudo` rights on your GASPAR user, use this. 
 - If you already have a `.bashrc` file in `/dlabscratch1/{GASPAR_USERNAME}`, please copy the contents of [`base/.bashrc`](base/.bashrc) to your file. This is necessary because the script does not create it if one already exists.
 
-## First Time Instructions
-
-The following steps have to be done once.
-
-- Check out [RUNAI ALIASES](#runai-aliases)
-- If you want to customize the images, look at [Customization](#customization)
-
-
 ## Connecting to VScode
 
 In order to connect to vscode you need to run:
