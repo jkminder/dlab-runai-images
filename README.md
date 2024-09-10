@@ -38,7 +38,7 @@ Before running the installation script, ensure you have the following:
 4. After installation, restart your terminal or run `source ~/.bashrc` (or the appropriate rc file for your shell) to apply the changes.
 
 5. Set up SSH access for RunAI containers:
-   - Start a container or use SSH to connect directly to the IC cluster.
+   - Start a container or use SSH to connect directly to the permanent IC nodes (ic39 or ic60).
    - Create the file `.ssh/authorized_keys` in your scratch folder (`/dlabscratch1/{GASPAR_USERNAME}`).
    - Paste your public SSH key into this file. (For help generating SSH keys, see [GitHub's SSH key guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent))
 
@@ -140,14 +140,6 @@ The installation script sets up several useful aliases. These are stored in the 
 - Don't add the `--command` flag to runai submit. This will overwrite the script that sets up your GASPAR user. 
 - You can't login to a root bash session (with `su -`). You have password less `sudo` rights on your GASPAR user, use this. 
 - If you already have a `.bashrc` file in `/dlabscratch1/{GASPAR_USERNAME}`, please copy the contents of [`base/.bashrc`](base/.bashrc) to your file. This is necessary because the script does not create it if one already exists.
-
-## First Time Instructions
-
-The following steps have to be done once.
-
-- Check out [RUNAI ALIASES](#runai-aliases)
-- If you want to customize the images, look at [Customization](#customization)
-
 
 ## Connecting to VScode
 
