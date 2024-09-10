@@ -84,7 +84,7 @@ echo "Detected OS: $os"
 
 # if windows -> exit
 if [[ "$os" == "windows" ]]; then
-    echo "Windows is not supported. Please use WSL or Git Bash."
+    echo "Windows is currently not supported. Please use WSL or Git Bash."
     exit 1
 fi
 
