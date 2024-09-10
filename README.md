@@ -61,7 +61,7 @@ Before running the installation script, ensure you have the following:
      - Use VS Code's [SSH extension](https://code.visualstudio.com/docs/remote/ssh) for direct container development
      - Run Jupyter notebooks on the container through VS Code
 
-Note: If you prefer manual installation or encounter issues with the script, you can follow the steps in the script manually. Refer to the `install_runai.sh` file for detailed instructions on each step of the installation process.
+Note: If you prefer manual installation or encounter issues with the script, you can follow the steps in the script manually. Refer to the [Manual Install](#manual-install) section.
 
 ## Reverting Changes
 
@@ -175,6 +175,41 @@ You can easily customize these images to your desire. No need to manually build 
         CMD ["/bin/bash"]
         ```
 3. (Optional) If you have created a new folder with a new Dockerfile, you need to also create a new Github Action that builds and uploads the image. For that duplicate the `.github/workflows/docker-base.yml` file, rename it to `docker-{yourimagename}.yml` and search-replace `base` with `{yourimagename}`. This will automatically build and publish the image under `ghcr.io/{github_shortname}/dlab-runai-images/{yourimagename}:master`.
+
+
+## Manual Install
+
+If the installation script doesn't work for you, or if you prefer to install manually, follow these steps:
+
+1. Download and install the RunAI CLI binaries:
+   - For RCP prod: https://rcp-caas-prod.rcp.epfl.ch/cli/{os}
+   - For RCP test: https://rcp-caas-test.rcp.epfl.ch/cli/{os}
+   - For IC: https://ic-caas.epfl.ch/cli/{os}
+   `{os}` is either `linux`, `debian` (mac os) or `windows`.
+
+   After downloading, make the binaries executable and move them to a directory in your PATH (e.g., `/usr/local/bin`).
+
+2. Set up kubectl configurations:
+   - For IC cluster: Follow the instructions at [IC IT Docs - Connecting to CaaS](https://inside.epfl.ch/ic-it-docs/ic-cluster/caas/connecting/)
+   - For RCP test cluster: Follow the instructions at [RCP Wiki - CaaS Quick Start](https://wiki.rcp.epfl.ch/en/home/CaaS/Quick_Start)
+   - For RCP prod cluster: Follow the instructions at [RCP Wiki - CaaS Quick Start Prod](https://wiki.rcp.epfl.ch/en/home/CaaS/Quick_Start_Prod)
+
+3. If the aliases provided in the `.runai_aliases` file don't work for you, you can use the binary names directly:
+   - For RCP prod: Use `runai-rcp-prod` instead of `runai`
+   - For RCP test: Use `runai-rcp-test` instead of `runai`
+   - For IC: Use `runai-ic` instead of `runai`
+
+   For example, to list jobs on the RCP prod cluster, you would use:
+   ```
+   runai-rcp-prod list
+   ```
+
+   To submit a job on the IC cluster, you would use:
+   ```
+   runai-ic submit ...
+   ```
+
+Remember to replace the binary name in all the examples provided in this README with the appropriate binary for your cluster.
 
 ## Support
 
