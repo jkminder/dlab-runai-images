@@ -82,6 +82,12 @@ else
 fi
 echo "Detected OS: $os"
 
+# if windows -> exit
+if [[ "$os" == "windows" ]]; then
+    echo "Windows is not supported. Please use WSL or Git Bash."
+    exit 1
+fi
+
 # Determine the appropriate rc file
 if [[ "$SHELL" == */zsh ]]; then
     rc_file="$HOME/.zshrc"
