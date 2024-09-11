@@ -79,11 +79,11 @@ echo "**** GOSU dev $@ ..."
 #       command was passed to the script ($@)
 # This ensures that the final command runs with the correct user permissions
 # and environment settings, while also properly handling signals and exit codes.
-exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec $@"
+# exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec $@"
 
 
 if [ -z "$1" ]; then
     exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash"
 else
-    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec $@ | tee /dev/tty"
+    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec bash -c '$@'"
 fi
