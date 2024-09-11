@@ -75,8 +75,8 @@ echo "**** GOSU dev $@ ..."
 exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec $@"
 
 
-# if [ -z "$1" ]; then
-#     exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash"
-# else
-#     exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec $@"
-# fi
+if [ -z "$1" ]; then
+    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash"
+else
+    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec bash -c '$@'"
+fi
