@@ -199,7 +199,7 @@ fi
 # Add source command to rc file
 if ! grep -q "source $HOME/.runai_aliases" "$rc_file"; then
     echo "Adding source command to $rc_file..."
-    echo "source $HOME/.runai_aliases" >> "$rc_file"
+    sudo echo "source $HOME/.runai_aliases" >> "$rc_file"
 else
     echo "Source command already exists in $rc_file."
 fi
