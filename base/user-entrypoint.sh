@@ -9,6 +9,7 @@ service ssh start
 GASPAR_USER=$(awk -F '-' '{ print $3 }' /var/run/secrets/kubernetes.io/serviceaccount/namespace)
 
 if ! id -u $GASPAR_USER > /dev/null 2>&1; then
+    echo "**** Creating GASPAR USER ****"
     GASPAR_UID=$(ldapsearch -H ldap://scoldap.epfl.ch -x -b "ou=users,o=epfl,c=ch" "(uid=$GASPAR_USER)" uidNumber | egrep ^uidNumber | awk '{ print $2 }')
     GASPAR_GID=$(ldapsearch -H ldap://scoldap.epfl.ch -x -b "ou=users,o=epfl,c=ch" "(uid=$GASPAR_USER)" gidNumber | egrep ^gidNumber | awk '{ print $2 }')
     GASPAR_SUPG=$(ldapsearch -LLL -H ldap://scoldap.epfl.ch -x -b ou=groups,o=epfl,c=ch \(memberUid=${GASPAR_USER}\) gidNumber | grep 'gidNumber:' | awk '{ print $2 }' | paste -s -d' ' -)
@@ -59,12 +60,33 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     # .bashrc for user
     chown ${GASPAR_USER}:${GASPAR_GID} /tmp/.bashrc
     su ${GASPAR_USER} -c "if [ ! -f "$USER_HOME/.bashrc" ]; then cp /tmp/.bashrc '$USER_HOME/.bashrc'; fi"
+fi
 
-    
+
+# Find correct USER_HOME if it's undefined
+if [ -z "$USER_HOME" ]; then
+    if [ -d "/dlabscratch1/$GASPAR_USER" ]; then
+        USER_HOME="/dlabscratch1/$GASPAR_USER"
+    elif [ -d "/mnt/dlabscratch1/$GASPAR_USER" ]; then
+        USER_HOME="/mnt/dlabscratch1/$GASPAR_USER"
+    elif [ -d "/home/$GASPAR_USER" ]; then
+        USER_HOME="/home/$GASPAR_USER"
+    else
+        echo "Error: Unable to find a valid home directory for $GASPAR_USER"
+        exit 1
     fi
+fi
+
+echo "USER_HOME: $USER_HOME"
+
+# Update existing .bashrc to conditionally run 'dlab' command (otherwise there are annoying errors)
+if su ${GASPAR_USER} -c "[ -f '$USER_HOME/.bashrc' ]"; then
+    su ${GASPAR_USER} -c "sed -i '/^dlab$/c\command -v dlab >/dev/null 2>&1 && dlab' '$USER_HOME/.bashrc'"
+fi
 
 if [ -z "$1" ]; then
-    exec gosu ${GASPAR_USER} /bin/bash
+    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash"
 else
-    exec gosu ${GASPAR_USER} "$@"
+    echo "**** Executing '/bin/bash -c \"$*\"' ****"
+    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash -c \"$*\""
 fi
