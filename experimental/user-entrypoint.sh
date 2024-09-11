@@ -77,6 +77,14 @@ if [ -z "$USER_HOME" ]; then
     fi
 fi
 
+echo "USER_HOME: $USER_HOME"
+if [ -f "$USER_HOME/.bashrc" ]
+    echo "User .bashrc found"
+fi
+
+cat $USER_HOME/.bashrc
+grep "^dlab$" "$USER_HOME/.bashrc"
+
 # Update existing .bashrc to conditionally run 'dlab' command
 if [ -f "$USER_HOME/.bashrc" ] && grep -q "^dlab$" "$USER_HOME/.bashrc"; then
     echo "**** Updating .bashrc to conditionally run 'dlab' command ****"
