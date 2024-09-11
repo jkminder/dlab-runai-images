@@ -63,21 +63,19 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
 fi
 
 
-# Find correct USER_HOME
-if [ -d "/dlabscratch1/$SCRATCH/$GASPAR_USER" ]; then
-    USER_HOME="/dlabscratch1/$SCRATCH/$GASPAR_USER"
-elif [ -d "/mnt/$SCRATCH/$GASPAR_USER" ]; then
-    USER_HOME="/mnt/$SCRATCH/$GASPAR_USER"
-elif [ -d "/$SCRATCH/$GASPAR_USER" ]; then
-    USER_HOME="/$SCRATCH/$GASPAR_USER"
-elif [ -d "/home/$GASPAR_USER" ]; then
-    USER_HOME="/home/$GASPAR_USER"
-else
-    echo "Error: Unable to find a valid home directory for $GASPAR_USER"
-    exit 1
+# Find correct USER_HOME if it's undefined
+if [ -z "$USER_HOME" ]; then
+    if [ -d "/dlabscratch1/$GASPAR_USER" ]; then
+        USER_HOME="/dlabscratch1/$GASPAR_USER"
+    elif [ -d "/mnt/dlabscratch1/$GASPAR_USER" ]; then
+        USER_HOME="/mnt/dlabscratch1/$GASPAR_USER"
+    elif [ -d "/home/$GASPAR_USER" ]; then
+        USER_HOME="/home/$GASPAR_USER"
+    else
+        echo "Error: Unable to find a valid home directory for $GASPAR_USER"
+        exit 1
+    fi
 fi
-
-echo "USER_HOME set to: $USER_HOME"
 
 # Update existing .bashrc to conditionally run 'dlab' command
 if [ -f "$USER_HOME/.bashrc" ] && grep -q "^dlab$" "$USER_HOME/.bashrc"; then
