@@ -61,8 +61,22 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
         su ${GASPAR_USER} -c "if [ ! -f "$USER_HOME/.bashrc" ]; then cp /tmp/.bashrc '$USER_HOME/.bashrc'; fi"
     fi
 
-if [ -z "$1" ]; then
-    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash"
-else
-    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash -c '$@'"
-fi
+echo "**** GOSU dev $@ ..."
+# This line does the following:
+# 1. Uses 'exec' to replace the current process with the new command
+# 2. 'gosu' is used to run the command as the specified user (${GASPAR_USER})
+# 3. '/bin/bash -c' runs a new bash shell with the following command string
+# 4. Inside the bash shell:
+#    a. First, it sources the user's .bashrc file to set up the environment
+#    b. Then it uses 'exec' again to replace the bash process with whatever
+#       command was passed to the script ($@)
+# This ensures that the final command runs with the correct user permissions
+# and environment settings, while also properly handling signals and exit codes.
+exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec $@"
+
+
+# if [ -z "$1" ]; then
+#     exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash"
+# else
+#     exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec $@"
+# fi
