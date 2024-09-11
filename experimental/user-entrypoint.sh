@@ -78,7 +78,7 @@ if [ -z "$USER_HOME" ]; then
 fi
 
 echo "USER_HOME: $USER_HOME"
-if [ -f "$USER_HOME/.bashrc" ]
+if [ -f "$USER_HOME/.bashrc" ]; then
     echo "User .bashrc found"
 fi
 
