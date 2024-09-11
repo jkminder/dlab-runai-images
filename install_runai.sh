@@ -90,13 +90,13 @@ fi
 
 # Determine the appropriate rc file
 if [[ "$SHELL" == */zsh ]]; then
-    rc_file="$HOME/.zshrc"
-elif [[ "$SHELL" == */bash ]]; then
-    if [[ "$os" == "darwin" ]]; then
-        rc_file="$HOME/.bash_profile"
+    if [ -f "$HOME/.zshrc" ]; then
+        rc_file="$HOME/.zshrc"
     else
         rc_file="$HOME/.bashrc"
     fi
+elif [[ "$SHELL" == */bash ]]; then
+    rc_file="$HOME/.bashrc"
 else
     echo "Unsupported shell: $SHELL"
     exit 1
@@ -199,7 +199,7 @@ fi
 # Add source command to rc file
 if ! grep -q "source $HOME/.runai_aliases" "$rc_file"; then
     echo "Adding source command to $rc_file..."
-    sudo echo "source $HOME/.runai_aliases" >> "$rc_file"
+    echo "source $HOME/.runai_aliases" >> "$rc_file"
 else
     echo "Source command already exists in $rc_file."
 fi
