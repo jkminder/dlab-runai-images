@@ -39,6 +39,7 @@ Before running the installation script, ensure you have the following:
 
 5. Set up SSH access for RunAI containers:
    - Start a container or use SSH to connect directly to the permanent IC nodes (ic39 or ic60).
+   - Make sure the folder `/dlabscratch1/{GASPAR_USERNAME}` exists. If it doesn't create it with `mkdir /dlabscratch1/{GASPAR_USERNAME}`.
    - Create the file `.ssh/authorized_keys` in your scratch folder (`/dlabscratch1/{GASPAR_USERNAME}`).
    - Paste your public SSH key into this file. (For help generating SSH keys, see [GitHub's SSH key guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent))
 
