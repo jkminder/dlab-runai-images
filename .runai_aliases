@@ -1,11 +1,50 @@
 # RUNAI ALIASES
+# Global variable to store current context
+RUNAI_CURRENT_CTX="rcp"
+
+# Function to set the current context
+set_runai_context() {
+    RUNAI_CURRENT_CTX="$1"
+}
+
+# Function to use the appropriate runai command based on context
+runai_context() {
+    if [ "$RUNAI_CURRENT_CTX" = "rcp" ]; then
+        runai-rcp-prod "$@"
+    elif [ "$RUNAI_CURRENT_CTX" = "rcp-test" ]; then
+        runai-rcp-test "$@"
+    elif [ "$RUNAI_CURRENT_CTX" = "ic" ]; then
+        runai-ic "$@"
+    else
+        echo "Invalid RUNAI_CURRENT_CTX: $RUNAI_CURRENT_CTX"
+        return 1
+    fi
+}
+
+# Function to use context-aware runai command
+runai() {
+	echo "Current context: $RUNAI_CURRENT_CTX"
+    runai_context "$@"
+}
 
 rpf() {
-	kubectl port-forward $1-0-0 2222:22;;
+    kubectl port-forward $1-0-0 2222:22
 }
-alias ric="runai config cluster ic-caas"
-alias rrcp="runai config cluster rcp-caas-test"
+
+rs() {
+    local pvc_name
+    if [ "$RUNAI_CURRENT_CTX" = "rcp" ]; then
+        pvc_name="dlab-scratch"
+    else
+        pvc_name="runai-dlab-{GASPAR_NAME}-scratch"
+    fi
+    runai_context submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc "$pvc_name:/mnt" "$@"
+}
+
+alias ric="runai config cluster ic-caas && set_runai_context ic"
+alias rrcp="runai config cluster rcp-caas-prod && set_runai_context rcp"
+alias rrcpt="runai config cluster rcp-caas-test && set_runai_context rcp-test"
 alias rl="runai list"
 alias rdj="runai delete job"
-alias rs="runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt"
 alias rb="runai bash"
+alias rsg="rs --gpu 1.0 --interactive"
