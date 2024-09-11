@@ -78,12 +78,12 @@ if [ -z "$USER_HOME" ]; then
 fi
 
 echo "USER_HOME: $USER_HOME"
-if [ -f "$USER_HOME/.bashrc" ]; then
+if su ${GASPAR_USER} -c "[ -f '$USER_HOME/.bashrc' ]"; then
     echo "User .bashrc found"
 fi
 
 # Update existing .bashrc to conditionally run 'dlab' command
-if [ -f "$USER_HOME/.bashrc" ]; then
+if su ${GASPAR_USER} -c "[ -f '$USER_HOME/.bashrc' ]"; then
     echo "**** Updating .bashrc to conditionally run 'dlab' command ****"
     su ${GASPAR_USER} -c "cat $USER_HOME/.bashrc"
     su ${GASPAR_USER} -c "sed -i '/^dlab$/c\command -v dlab >/dev/null 2>&1 && dlab' '$USER_HOME/.bashrc'"
