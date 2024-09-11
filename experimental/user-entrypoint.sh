@@ -66,10 +66,11 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     fi
 
     fi
-echo "**** GOSU dev $@ ..."
+
 
 if [ -z "$1" ]; then
     exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash"
 else
+    echo "**** Executing '/bin/bash -c \"$*\"'"
     exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash -c \"$*\""
 fi
