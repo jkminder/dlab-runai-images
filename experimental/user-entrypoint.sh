@@ -62,7 +62,7 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     fi
 
 if [ -z "$1" ]; then
-    exec gosu ${GASPAR_USER} /bin/bash
+    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash"
 else
-    exec gosu ${GASPAR_USER} /bin/bash -c -l "$@"
+    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash -c '$@'"
 fi
