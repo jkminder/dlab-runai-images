@@ -23,6 +23,7 @@ runai_context() {
 
 # Function to use context-aware runai command
 runai() {
+	echo "Current context: $RUNAI_CURRENT_CTX"
     runai_context "$@"
 }
 
