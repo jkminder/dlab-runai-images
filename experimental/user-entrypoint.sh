@@ -58,10 +58,17 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
 
     # .bashrc for user
     chown ${GASPAR_USER}:${GASPAR_GID} /tmp/.bashrc
-        su ${GASPAR_USER} -c "if [ ! -f "$USER_HOME/.bashrc" ]; then cp /tmp/.bashrc '$USER_HOME/.bashrc'; fi"
+    su ${GASPAR_USER} -c "if [ ! -f "$USER_HOME/.bashrc" ]; then cp /tmp/.bashrc '$USER_HOME/.bashrc'; fi"
+
+     # Update existing .bashrc to conditionally run 'dlab' command
+    if [ -f "$USER_HOME/.bashrc" ]; then
+        su ${GASPAR_USER} -c "sed -i '/^dlab$/c\command -v dlab >/dev/null 2>&1 && dlab' '$USER_HOME/.bashrc'"
+    fi
+
     fi
 
 echo "**** GOSU dev $@ ..."
+
 # This line does the following:
 # 1. Uses 'exec' to replace the current process with the new command
 # 2. 'gosu' is used to run the command as the specified user (${GASPAR_USER})
@@ -78,5 +85,5 @@ exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec $@"
 if [ -z "$1" ]; then
     exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash"
 else
-    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec bash -c '$@'"
+    exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec $@ | tee /dev/tty"
 fi
