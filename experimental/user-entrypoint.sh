@@ -60,17 +60,21 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     chown ${GASPAR_USER}:${GASPAR_GID} /tmp/.bashrc
     su ${GASPAR_USER} -c "if [ ! -f "$USER_HOME/.bashrc" ]; then cp /tmp/.bashrc '$USER_HOME/.bashrc'; fi"
 
-     # Update existing .bashrc to conditionally run 'dlab' command
-    if [ -f "$USER_HOME/.bashrc" ]; then
+    # Update existing .bashrc to conditionally run 'dlab' command
+    if [ -f "$USER_HOME/.bashrc" ] && grep -q "^dlab$" "$USER_HOME/.bashrc"; then
+        echo "**** Updating .bashrc to conditionally run 'dlab' command ****"
+        cat $USER_HOME/.bashrc
         su ${GASPAR_USER} -c "sed -i '/^dlab$/c\command -v dlab >/dev/null 2>&1 && dlab' '$USER_HOME/.bashrc'"
+        cat $USER_HOME/.bashrc
     fi
 
-    fi
+
+fi
 
 
 if [ -z "$1" ]; then
     exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash"
 else
-    echo "**** Executing '/bin/bash -c \"$*\"'"
+    echo "**** Executing '/bin/bash -c \"$*\"' ****"
     exec gosu ${GASPAR_USER} /bin/bash -c "source ~/.bashrc && exec /bin/bash -c \"$*\""
 fi
