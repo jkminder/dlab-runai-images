@@ -82,15 +82,12 @@ if [ -f "$USER_HOME/.bashrc" ]; then
     echo "User .bashrc found"
 fi
 
-cat $USER_HOME/.bashrc
-grep "^dlab$" "$USER_HOME/.bashrc"
-
 # Update existing .bashrc to conditionally run 'dlab' command
-if [ -f "$USER_HOME/.bashrc" ] && grep -q "^dlab$" "$USER_HOME/.bashrc"; then
+if [ -f "$USER_HOME/.bashrc" ]; then
     echo "**** Updating .bashrc to conditionally run 'dlab' command ****"
-    cat $USER_HOME/.bashrc
+    su ${GASPAR_USER} -c "cat $USER_HOME/.bashrc"
     su ${GASPAR_USER} -c "sed -i '/^dlab$/c\command -v dlab >/dev/null 2>&1 && dlab' '$USER_HOME/.bashrc'"
-    cat $USER_HOME/.bashrc
+    su ${GASPAR_USER} -c "cat $USER_HOME/.bashrc"
 fi
 
 if [ -z "$1" ]; then
