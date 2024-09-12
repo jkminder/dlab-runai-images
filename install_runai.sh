@@ -51,6 +51,19 @@ install_runai() {
     fi
 }
 
+wrl() {
+    if [ "$RUNAI_CURRENT_CTX" = "rcp" ]; then
+        watch -n 1 runai-rcp-prod list
+    elif [ "$RUNAI_CURRENT_CTX" = "rcp-test" ]; then
+        watch -n 1 runai-rcp-test list
+    elif [ "$RUNAI_CURRENT_CTX" = "ic" ]; then
+        watch -n 1 runai-ic list
+    else
+        echo "Invalid RUNAI_CURRENT_CTX: $RUNAI_CURRENT_CTX"
+        return 1
+    fi
+}
+
 # Function to set kubectl config
 set_kubectl_config() {
     local cluster_name="$1"

@@ -127,6 +127,7 @@ The installation script sets up several useful aliases. These are stored in the 
 
 - `runai`: Autodetects the cluster you are on and switches context. 
 - `rl`: Short for `runai list`
+- `wrl`: Short for `watch -n 1 runai list`
 - `rb`: Short for `runai bash`
 - `rdj`: Short for `runai delete job`
 - `rpf`: Portforward to your container
