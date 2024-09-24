@@ -1,6 +1,15 @@
 # DLAB RUNAI Images and CLI Installer
 
-This repository stores the RUNAI images for DLABs compute resources and provides installation scripts for the RunAI CLI and kubectl configurations.
+This repository stores the RUNAI images for DLABs compute resources and provides installation scripts for the RunAI CLI and kubectl configurations. 
+
+## Basics
+
+Runai is a job submission system for GPU clusters. It basically let's you request resources (jobs) according to your desires (e.g. 4 GPUs, 128 CPUs and 80G of RAM). 
+You can either submit *interactive* jobs, which have priority but are limited (max 1 GPU). They are intended for debugging and similar things, were you directly work on the allocated resource, e.g. by connecting a VSCode instance and using jupyter notebooks via VSCode.
+
+Or you can submit *train* jobs, that automatically run a provided script, whenever there's enough resources available (lower priority, but you can request more resources). Train runs have to be stateful, meaning they regularly save checkpoints and can automatically load these checkpoints. It can happen that your training job is interrupted, and continued on a different compute node due to balancing operations by the RUNAI controller (although this happens rarely). **Please use train jobs for non interactive jobs** (e.g. **don't** request an interactive job and then just manually start your training script)!
+
+The following documentation will guide you through how to do all of these things.
 
 ## Prerequisites
 
@@ -57,7 +66,7 @@ Before running the installation script, ensure you have the following:
      ```
    - Replace `{GASPAR_USERNAME}` and `{PATH_TO_YOUR_PRIVATE_KEY}` with your actual values.
    - This configuration allows easy SSH connections to RunAI containers without warnings.
-   - After setting up port forwarding (use `rpf container-name` with [RUNAI ALIASES](#runai-aliases)), you can:
+   - After setting up port forwarding (use `rpf container-name` with [RUNAI ALIASES](#runai-aliases)), you can (be sure to [submit a job first](#How-to-submit-jobs)):
      - Connect via SSH using `ssh runai`
      - Use VS Code's [SSH extension](https://code.visualstudio.com/docs/remote/ssh) for direct container development
      - Run Jupyter notebooks on the container through VS Code
