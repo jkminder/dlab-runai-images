@@ -103,6 +103,7 @@ There are currently two images available:
 Use the `runai submit {JOB_NAME} -i {IMAGE} -- {COMMAND}` command. To map the scratch partition add the flag `--pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt`. For the RCP-prod use `--pvc dlab-scatch:/mnt` instead of the `--pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt` flag. If you plan on iteractively using the container add the `--interactive` flag. 
 This will give you priority in the queue, but be sure to only add it if you need interactive jobs. With `-g {num}` you can select the number of GPUS, with `--cpu {num}` the number of CPUs. The flag `--memory 10G` will allocate you at least 10G of RAM. Should you run into shared memory issues, add the flag `--large-shm` (sometimes required for massively parallel dataloaders). With `--node-type G10` you select the node type. 
 
+
 A few examples:
 
 **Submit an interactive job which runs for 1 hour with the name `test` with 1 GPU.**
@@ -127,6 +128,10 @@ runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dl
 ```
 
 I strongly recommend using the aliases provided by the installation script. See [RUNAI ALIASES](#runai-aliases). Should your shell not support aliases, use the [`submit.sh`](submit.sh) script (replace the binaries and ENVS in the file first).
+If you have successfully installed the runai aliases (check if `rl` works in your terminal), all of this gets much easier. Two examples: 
+- A single interactive gpu job for 2h: `rsg jobname -- sleep 2h` (`rsg` is short for `runai submit -i runai-dlab-{GASPAR_USERNAME}-scratch:/mnt --interactive --gpu 1.0`)
+- An training job with 2 GPUs and 120G of RAM: `rs trainjobname --gpu 2.0 --memory 120G -- path/to/my/train/script --trainingargs` (`rs` is short for `runai submit -i runai-dlab-{GASPAR_USERNAME}-scratch:/mnt`
+These aliases also automatically deal with the correct name for the scratch partition.
 
 For a detailed instruction manual on the `runai submit` command, see [here](https://docs.run.ai/v2.9/Researcher/cli-reference/runai-submit/#-pvc-storage_class_namesizecontainer_mount_pathro).
 
