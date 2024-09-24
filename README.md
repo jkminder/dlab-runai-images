@@ -131,6 +131,7 @@ I strongly recommend using the aliases provided by the installation script. See 
 If you have successfully installed the runai aliases (check if `rl` works in your terminal), all of this gets much easier. Two examples: 
 - A single interactive gpu job for 2h: `rsg jobname -- sleep 2h` (`rsg` is short for `runai submit -i runai-dlab-{GASPAR_USERNAME}-scratch:/mnt --interactive --gpu 1.0`)
 - An training job with 2 GPUs and 120G of RAM: `rs trainjobname --gpu 2.0 --memory 120G -- path/to/my/train/script --trainingargs` (`rs` is short for `runai submit -i runai-dlab-{GASPAR_USERNAME}-scratch:/mnt`
+
 These aliases also automatically deal with the correct name for the scratch partition.
 
 For a detailed instruction manual on the `runai submit` command, see [here](https://docs.run.ai/v2.9/Researcher/cli-reference/runai-submit/#-pvc-storage_class_namesizecontainer_mount_pathro).
