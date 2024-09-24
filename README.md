@@ -130,6 +130,8 @@ I strongly recommend using the aliases provided by the installation script. See 
 
 For a detailed instruction manual on the `runai submit` command, see [here](https://docs.run.ai/v2.9/Researcher/cli-reference/runai-submit/#-pvc-storage_class_namesizecontainer_mount_pathro).
 
+Once you have submitted a job, check `runai list` or `rl` to see the status of your requested job.
+
 ## RUNAI Aliases
 
 The installation script sets up several useful aliases. These are stored in the `.runai_aliases` file in your home directory and are loaded when you open a new terminal. Some key aliases include:
