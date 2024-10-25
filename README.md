@@ -152,7 +152,6 @@ The installation script sets up several useful aliases. These are stored in the 
 - `rsg`: Short for `rs --gpu 1.0 --interactive`
 - `ric`: Switches the context to the IC cluster
 - `rrcp`: Switches the context to the RCP prod cluster
-- `rrcpt`: Switches the context to the RCP test cluster
 
 ## Caveats
 
@@ -194,7 +193,6 @@ If the installation script doesn't work for you, or if you prefer to install man
 
 1. Download and install the RunAI CLI binaries:
    - For RCP prod: https://rcp-caas-prod.rcp.epfl.ch/cli/{os}
-   - For RCP test: https://rcp-caas-test.rcp.epfl.ch/cli/{os}
    - For IC: https://ic-caas.epfl.ch/cli/{os}
    `{os}` is either `linux`, `debian` (mac os) or `windows`.
 
@@ -202,12 +200,10 @@ If the installation script doesn't work for you, or if you prefer to install man
 
 2. Set up kubectl configurations:
    - For IC cluster: Follow the instructions at [IC IT Docs - Connecting to CaaS](https://inside.epfl.ch/ic-it-docs/ic-cluster/caas/connecting/)
-   - For RCP test cluster: Follow the instructions at [RCP Wiki - CaaS Quick Start](https://wiki.rcp.epfl.ch/en/home/CaaS/Quick_Start)
    - For RCP prod cluster: Follow the instructions at [RCP Wiki - CaaS Quick Start Prod](https://wiki.rcp.epfl.ch/en/home/CaaS/Quick_Start_Prod)
 
 3. If the aliases provided in the `.runai_aliases` file don't work for you, you can use the binary names directly:
    - For RCP prod: Use `runai-rcp-prod` instead of `runai`
-   - For RCP test: Use `runai-rcp-test` instead of `runai`
    - For IC: Use `runai-ic` instead of `runai`
 
    For example, to list jobs on the RCP prod cluster, you would use:

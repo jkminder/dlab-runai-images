@@ -54,8 +54,6 @@ install_runai() {
 wrl() {
     if [ "$RUNAI_CURRENT_CTX" = "rcp" ]; then
         watch -n 1 runai-rcp-prod list
-    elif [ "$RUNAI_CURRENT_CTX" = "rcp-test" ]; then
-        watch -n 1 runai-rcp-test list
     elif [ "$RUNAI_CURRENT_CTX" = "ic" ]; then
         watch -n 1 runai-ic list
     else
@@ -155,13 +153,23 @@ backup_file "$rc_file"
 # Backup and remove existing RunAI binaries
 for binary in runai runai-rcp-prod runai-rcp-test runai-ic; do
     if command -v "$binary" > /dev/null 2>&1; then
-        binary_path=$(which "$binary")
-        backup_file "$binary_path"
-        echo "$binary_path" >> "$BACKUP_DIR/binary_paths.txt"
-        # Remove the binary with sudo
-        echo "Removing existing $binary binary (requires sudo)..."
-        sudo rm "$binary_path"
-        echo "Removed existing $binary binary"
+        binary_path=$(command -v "$binary")
+        if [ -n "$binary_path" ]; then
+            backup_file "$binary_path"
+            echo "$binary_path" >> "$BACKUP_DIR/binary_paths.txt"
+            # Remove the binary with sudo
+            echo "Removing existing $binary binary (requires sudo)..."
+            if sudo rm "$binary_path"; then
+                echo "Removed existing $binary binary"
+            else
+                echo "Failed to remove $binary binary. Please check permissions and try again."
+                exit 1
+            fi
+        else
+            echo "Warning: $binary found but unable to determine its path. Skipping removal."
+        fi
+    else
+        echo "$binary not found. Skipping."
     fi
 done
 
@@ -205,7 +213,6 @@ if [[ "$os" == "windows" ]]; then
     exit 1
 else
     install_runai "https://rcp-caas-prod.rcp.epfl.ch/cli/$os" "runai-rcp-prod"
-    install_runai "https://rcp-caas-test.rcp.epfl.ch/cli/$os" "runai-rcp-test"
     install_runai "https://ic-caas.epfl.ch/cli/$os" "runai-ic"
 fi
 
@@ -225,7 +232,6 @@ fi
 
 # Set kubectl configurations
 set_kubectl_config "caas-prod.rcp.epfl.ch" "https://caas-prod.rcp.epfl.ch:443" "runai-rcp-authenticated-user" "rcp-caas-prod" "runai-dlab-$GASPAR_NAME" "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJRHdwSElpTmQrVUV3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TkRBMk1UUXdPVFU1TWpkYUZ3MHpOREEyTVRJeE1EQTBNamRhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUURvOHJDRjNjeXdRRTlxTVpEOHNGTXo2K0FzSEpnWi81WVNwMGNhWHNKd0JWUERneGdwRGZKY0hnYXYKS2tOdVhTNGpBN1VrZkg1amZXQitvdytpamN3OUR4cjV6STB2TUNReWtzYk9kMVFFMis0Q0J1U0JXU01Gc1pYZQp2T01SanltN056SytxWkVldHpxR0M0bU5LdU9qbC92cGd4ZDNuM2Y2L3loRHhockp2bkVWKzZlUE5icWpDZURZCld1VWFZdUYxRmM4QnZHN0hma3FYRlRWWVdlNkpNa3JSbDQxOVo5a2diNnIvUFNZVzZqdDhhNThTSGNHSVhnTFcKOTBta3BFb1JCMENOSG0wQllEQjdjNFJxMmdyaWtZTUlldGM0eXk2L3NSdFp6NzFiTUQrM2ZDNk92NDdvOXUzWgpld0VWeEJ4dG11ZkVvVGduVEVyNXFYMlhxWFZMQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJSazdCMm84a3cxcyt0Ny9ZaGxmV1h1MnR6TkdEQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQXFOdnQrR01lTwp6QnZZZEQ2SExCakFVeWc1czd0TDgzOVltd0RhRXBseG45ZlBRdUV6UW14cnEwUEoxcnVZNnRvRks1SEN4RFVzCmJDN3R3WlMzaVdNNXQ5NEJveHJGVC92c3QrQmtzbWdvTGM2T0N1MitYcngyMUg3UnFLTnNVR01LN2tFdGN6cHgKeXUrYTB6T0tISEUxNWFSVENPbklzQ1pXaTRhVFhIZ00zQ2U4VEhBMXRxaW9pREFHMVFUQXNhNXhTeVM3RWlUSQpDYi9xbktPRlVvM3V3bkRocWljRTU3dE1LTjliRE8rV3hNMzVxT2lBZXVXOUVnc2JlOFA5aDY2NG1tK1QzbjY0ClJNL1l1NHhmcDZwMHMvdGZyZTVjaUFvT0dGekYyRmVKek5PYm1vRkVseUtKc0RwbEorcWFTVXlaL2NtNWRIYUUKQVUxOVMrUWpFc1cvCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
-set_kubectl_config "caas-test.rcp.epfl.ch" "https://caas-test.rcp.epfl.ch:443" "runai-rcp-authenticated-user" "rcp-caas-test" "runai-dlab-$GASPAR_NAME" "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUMvakNDQWVhZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJek1EUXlOakE0TVRRME5sb1hEVE16TURReU16QTRNVFEwTmxvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBTFAxCmtTZ2E4NWRWU0p0VUxGQ1g5VWo1K1lTT2dCbG9MZGVxZVgrM1ByVGtQZkptWFBxeXlsVVBLN0tJUWlvSUplNm8KRTBaS2JZbU03SnEvL0lPaHF4R0VraUNrTHJCamJrYXF5M3NibkNhWGFMa1pQYkhNWjgwdmlMMGNFZHNJTWN4WgozdHpMTzFNTldwZW9mZlJ6L1NvbXpqSTVDQldJbUptTmhvZXpJQUVNOGJuaDJKeFBFNzRwWThTS1BTRk5YVzN0CjgxNmM5cXRvc1lJQjVrTnh1UjRGWVh5bGloZHZ3UmVqVW9wajA2ME1rSkl3QmpXM01YTFUrdkVyandKeFc5Q1cKZ2plUndzOG5kdW5VVHREcy9CVjhGbW5JZy81VVNhZTBzUE5FQWxvZC9TbGhrMnNuWTJvUXZlTHpFNkhrMnluRgpHNXd1VGVXRDZGY2Erd1pNMjM4Q0F3RUFBYU5aTUZjd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0hRWURWUjBPQkJZRUZNVVhkVWVnK2xMdTlHWElMQ2VlOVJzOENmUXpNQlVHQTFVZEVRUU8KTUF5Q0NtdDFZbVZ5Ym1WMFpYTXdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBR051a2ZUR3E0RTlrckkreVZQbApaem1reSszaUNTMnYvTU9OU3h0S01idWZ2V0ROZFM3QzZaK1RDQTJSd0c1Y2gzZUh5UW9oTSs0K2wrSTJxMTFwCjNJVGRxYVI4RDhpQkFCbXV6Yzl2a3BKanZTTzZ4VVpnTFJZMHRDTUxXZ3g2b2tBcWhxZDV3YTZIYmN6Z1QrSUcKQlVGbERtR0R4K0MxTnFIYVFKUVN1bENqL1ZyS1RROVFlY1NoZGZqVDgvS1NVUjQ4VTlEdlA3dnU0YkRnWW5DKwpoOXEwUlFpUGR4TEtlL2Q5aGd0UnM5TjFQdGRYZXAxdHB3NCs3Y3N4TE1DSXNmYTBwaW8yb3lEems0bTNjSWRNCi9iNElHUEZaM2hYZktOVGtybnUrWmdCUms5Yjk3emNKZVdhendxTXUyd1dkV2JiQjdpaU5ZK2xtWkl1S0dUeFQKWWpRPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
 set_kubectl_config "ic-caas" "https://ic-caas.epfl.ch:6443" "ic-caas-user" "ic-caas" "runai-dlab-$GASPAR_NAME"
 
 # Set up OIDC auth providers
@@ -248,7 +254,7 @@ kubectl config set-credentials ic-caas-user \
     --auth-provider-arg=redirect-uri=https://epfl.run.ai/oauth-code
 
 # Set the default context
-kubectl config use-context rcp-caas-test
+kubectl config use-context rcp-caas-prod
 
 echo "kubectl configurations have been set up successfully."
 
