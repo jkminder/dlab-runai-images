@@ -118,14 +118,6 @@ runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dl
 ```
 runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt -g 0.5 --cpu 12 test -- sleep 3600
 ```
-**Submit a job with a specific node type**
-Node types
-* ICC: [S8|G9|G10]  "S8" (CPU only), "G9" (Nvidia V100) or "G10" (Nvidia A100)
-* RCP: there is only one node type
-
-```
-runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt --interactive -g 1.0 --node-type G10 test -- sleep 3600
-```
 
 I strongly recommend using the aliases provided by the installation script. See [RUNAI ALIASES](#runai-aliases). Should your shell not support aliases, use the [`submit.sh`](submit.sh) script (replace the binaries and ENVS in the file first).
 If you have successfully installed the runai aliases (check if `rl` works in your terminal), all of this gets much easier. Two examples: 
@@ -137,6 +129,27 @@ These aliases also automatically deal with the correct name for the scratch part
 For a detailed instruction manual on the `runai submit` command, see [here](https://docs.run.ai/v2.9/Researcher/cli-reference/runai-submit/#-pvc-storage_class_namesizecontainer_mount_pathro).
 
 Once you have submitted a job, check `runai list` or `rl` to see the status of your requested job.
+
+### Submit a job with a specific GPU
+#### IC Cluster
+On the IC cluster, we select the node type with the flag `--node-type G10`.
+* ICC: [S8|G9|G10]  "S8" (CPU only), "G9" (Nvidia V100) or "G10" (Nvidia A100)
+
+```
+runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dlab-{GASPAR_USERNAME}-scratch:/mnt --interactive -g 1.0 --node-type G10 test -- sleep 3600
+```
+#### RCP
+There are the following GPUs available: V100, A100 and also H100. The default GPU is V100. If you need one of the others add the following cmd to your runai submit:
+- A100: --node-pools default
+- H100: --node-pools h100
+- V100: --node-pools v100
+
+(Yes, you spottet it correctly, --node-pools v100 is the default node pool and the a100 node pool is called default:shrug:) (edite
+
+Different GPUs have different costs:
+A100 is 0.38CHF/h, V100 0.20CHF/h and H100 0.68CHF/h (09.11.24)
+
+See here for more details: https://www.epfl.ch/campus/services/finance/wp-content/uploads/2024/09/Grille-RCP-validee-1.pdf
 
 ## RUNAI Aliases
 
