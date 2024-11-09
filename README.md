@@ -140,11 +140,11 @@ runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dl
 ```
 #### RCP
 There are the following GPUs available: V100, A100 and also H100. The default GPU is V100. If you need one of the others add the following cmd to your runai submit:
-- A100: --node-pools default
-- H100: --node-pools h100
-- V100: --node-pools v100
+- A100: `--node-pools default`
+- H100: `--node-pools h100`
+- V100: `--node-pools v100`
 
-(Yes, you spottet it correctly, --node-pools v100 is the default node pool and the a100 node pool is called default:shrug:) (edite
+(Yes, you spottet it correctly, `--node-pools v100` is the default node pool and the a100 node pool is called default :shrug:) (edite
 
 Different GPUs have different costs:
 A100 is 0.38CHF/h, V100 0.20CHF/h and H100 0.68CHF/h (09.11.24)
