@@ -18,8 +18,11 @@ if ! id -u $GASPAR_USER > /dev/null 2>&1; then
     # Create Groups
     for gid in $GASPAR_SUPG; do
         GROUP_NAME=$(ldapsearch -LLL -H ldap://scoldap.epfl.ch -x -b ou=groups,o=epfl,c=ch \(gidNumber=$gid\) cn | egrep ^cn | awk '{ print $2 }')
+        echo $GROUP_NAME
         if ! getent group $GROUP_NAME > /dev/null 2>&1; then
-            groupadd -g $gid $(ldapsearch -LLL -H ldap://scoldap.epfl.ch -x -b ou=groups,o=epfl,c=ch \(gidNumber=$gid\) cn | egrep ^cn | awk '{ print $2 }')
+            GRPNM=$(ldapsearch -LLL -H ldap://scoldap.epfl.ch -x -b ou=groups,o=epfl,c=ch \(gidNumber=$gid\) cn | egrep ^cn | awk '{ print $2 }')
+            echo $GRPNM
+            groupadd -g $gid $GRPNM
         else
             groupmod -g $gid $GROUP_NAME
         fi
