@@ -11,6 +11,7 @@ nnsight
 safetensors
 transformers
 datasets
+scikit-learn
 pyyaml
 wandb
 numpy
