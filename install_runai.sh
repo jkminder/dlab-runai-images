@@ -52,14 +52,7 @@ install_runai() {
 }
 
 wrl() {
-    if [ "$RUNAI_CURRENT_CTX" = "rcp" ]; then
-        watch -n 1 runai-rcp-prod list
-    elif [ "$RUNAI_CURRENT_CTX" = "ic" ]; then
-        watch -n 1 runai-ic list
-    else
-        echo "Invalid RUNAI_CURRENT_CTX: $RUNAI_CURRENT_CTX"
-        return 1
-    fi
+    watch -n 1 runai-rcp-prod list
 }
 
 # Function to set kubectl config
@@ -122,7 +115,7 @@ if ! command_exists kubectl; then
 fi
 
 # Check if RunAI is already installed
-if command_exists runai || command_exists runai-rcp-prod || command_exists runai-rcp-test || command_exists runai-ic; then
+if command_exists runai || command_exists runai-rcp-prod || command_exists runai-rcp-test; then
     read -p "RunAI is already installed. Do you want to overwrite it? (y/n) " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -151,7 +144,7 @@ backup_file "$HOME/.kube/config"
 backup_file "$rc_file"
 
 # Backup and remove existing RunAI binaries
-for binary in runai runai-rcp-prod runai-rcp-test runai-ic; do
+for binary in runai runai-rcp-prod runai-rcp-test; do
     if command -v "$binary" > /dev/null 2>&1; then
         binary_path=$(command -v "$binary")
         if [ -n "$binary_path" ]; then
@@ -172,7 +165,6 @@ for binary in runai runai-rcp-prod runai-rcp-test runai-ic; do
         echo "$binary not found. Skipping."
     fi
 done
-
 
 # Ask for GASPAR_NAME
 read -p "Please enter your GASPAR_NAME: " GASPAR_NAME
@@ -206,14 +198,13 @@ fi
 
 echo "The .runai_aliases file has been saved to $HOME/.runai_aliases"
 
-# Download and install RunAI CLIs
+# Download and install RunAI CLI
 if [[ "$os" == "windows" ]]; then
     echo "Windows detected. Please install Git Bash or WSL to use this script."
     echo "After installing, run this script again within the bash environment."
     exit 1
 else
     install_runai "https://rcp-caas-prod.rcp.epfl.ch/cli/$os" "runai-rcp-prod"
-    install_runai "https://ic-caas.epfl.ch/cli/$os" "runai-ic"
 fi
 
 # Add source command to rc file
@@ -229,10 +220,8 @@ else
     echo "Source command already exists in $rc_file."
 fi
 
-
 # Set kubectl configurations
 set_kubectl_config "caas-prod.rcp.epfl.ch" "https://caas-prod.rcp.epfl.ch:443" "runai-rcp-authenticated-user" "rcp-caas-prod" "runai-dlab-$GASPAR_NAME" "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJRHdwSElpTmQrVUV3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TkRBMk1UUXdPVFU1TWpkYUZ3MHpOREEyTVRJeE1EQTBNamRhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUURvOHJDRjNjeXdRRTlxTVpEOHNGTXo2K0FzSEpnWi81WVNwMGNhWHNKd0JWUERneGdwRGZKY0hnYXYKS2tOdVhTNGpBN1VrZkg1amZXQitvdytpamN3OUR4cjV6STB2TUNReWtzYk9kMVFFMis0Q0J1U0JXU01Gc1pYZQp2T01SanltN056SytxWkVldHpxR0M0bU5LdU9qbC92cGd4ZDNuM2Y2L3loRHhockp2bkVWKzZlUE5icWpDZURZCld1VWFZdUYxRmM4QnZHN0hma3FYRlRWWVdlNkpNa3JSbDQxOVo5a2diNnIvUFNZVzZqdDhhNThTSGNHSVhnTFcKOTBta3BFb1JCMENOSG0wQllEQjdjNFJxMmdyaWtZTUlldGM0eXk2L3NSdFp6NzFiTUQrM2ZDNk92NDdvOXUzWgpld0VWeEJ4dG11ZkVvVGduVEVyNXFYMlhxWFZMQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJSazdCMm84a3cxcyt0Ny9ZaGxmV1h1MnR6TkdEQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQXFOdnQrR01lTwp6QnZZZEQ2SExCakFVeWc1czd0TDgzOVltd0RhRXBseG45ZlBRdUV6UW14cnEwUEoxcnVZNnRvRks1SEN4RFVzCmJDN3R3WlMzaVdNNXQ5NEJveHJGVC92c3QrQmtzbWdvTGM2T0N1MitYcngyMUg3UnFLTnNVR01LN2tFdGN6cHgKeXUrYTB6T0tISEUxNWFSVENPbklzQ1pXaTRhVFhIZ00zQ2U4VEhBMXRxaW9pREFHMVFUQXNhNXhTeVM3RWlUSQpDYi9xbktPRlVvM3V3bkRocWljRTU3dE1LTjliRE8rV3hNMzVxT2lBZXVXOUVnc2JlOFA5aDY2NG1tK1QzbjY0ClJNL1l1NHhmcDZwMHMvdGZyZTVjaUFvT0dGekYyRmVKek5PYm1vRkVseUtKc0RwbEorcWFTVXlaL2NtNWRIYUUKQVUxOVMrUWpFc1cvCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
-set_kubectl_config "ic-caas" "https://ic-caas.epfl.ch:6443" "ic-caas-user" "ic-caas" "runai-dlab-$GASPAR_NAME"
 
 # Set up OIDC auth providers
 kubectl config set-credentials runai-rcp-authenticated-user \
@@ -243,15 +232,6 @@ kubectl config set-credentials runai-rcp-authenticated-user \
     --auth-provider-arg=client-id=runai-cli \
     --auth-provider-arg=idp-issuer-url=https://app.run.ai/auth/realms/rcpepfl \
     --auth-provider-arg=redirect-uri=https://rcpepfl.run.ai/oauth-code
-
-kubectl config set-credentials ic-caas-user \
-    --auth-provider=oidc \
-    --auth-provider-arg=airgapped=true \
-    --auth-provider-arg=auth-flow=remote-browser \
-    --auth-provider-arg=realm=epfl \
-    --auth-provider-arg=client-id=runai-cli \
-    --auth-provider-arg=idp-issuer-url=https://app.run.ai/auth/realms/epfl \
-    --auth-provider-arg=redirect-uri=https://epfl.run.ai/oauth-code
 
 # Set the default context
 kubectl config use-context rcp-caas-prod
