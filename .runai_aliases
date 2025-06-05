@@ -11,8 +11,6 @@ set_runai_context() {
 runai_context() {
     if [ "$RUNAI_CURRENT_CTX" = "rcp" ]; then
         runai-rcp-prod "$@"
-    elif [ "$RUNAI_CURRENT_CTX" = "ic" ]; then
-        runai-ic "$@"
     else
         echo "Invalid RUNAI_CURRENT_CTX: $RUNAI_CURRENT_CTX"
         return 1
@@ -39,7 +37,6 @@ rs() {
     runai_context submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc "$pvc_name:/mnt" "$@"
 }
 
-alias ric="runai config cluster ic-caas && set_runai_context ic"
 alias rrcp="runai config cluster rcp-caas-prod && set_runai_context rcp"
 alias rl="runai list"
 alias rdj="runai delete job"
