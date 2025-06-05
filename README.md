@@ -38,7 +38,7 @@ Before running the installation script, ensure you have the following:
 
    The script will:
    - Backup existing RunAI configurations and binaries
-   - Install the RunAI CLI for RCP and IC clusters
+   - Install the RunAI CLI for RCP cluster.
    - Configure kubectl for the RunAI environments
    - Set up necessary aliases and environment variables
 
@@ -47,7 +47,7 @@ Before running the installation script, ensure you have the following:
 4. After installation, restart your terminal or run `source ~/.bashrc` (or the appropriate rc file for your shell) to apply the changes.
 
 5. Set up SSH access for RunAI containers:
-   - Start a container or use SSH to connect directly to the permanent IC nodes (ic39 or ic60).
+   - Start a container or use SSH to connect directly to the permanent IC nodes ([ic39 or ic60](https://dlab.epfl.ch/onboarding/resources/)). Alternatively, you can run `ssh <gaspar>@jumphost.rcp.epfl.ch` directly in your terminal and try to find the `dlab/scratch/` folder. You can do this by running `cd /mnt/dlab/scratch/`.
    - Make sure the folder `/dlabscratch1/{GASPAR_USERNAME}` exists. If it doesn't create it with `mkdir /dlabscratch1/{GASPAR_USERNAME}`.
    - Create the file `.ssh/authorized_keys` in your scratch folder (`/dlabscratch1/{GASPAR_USERNAME}`).
    - Paste your public SSH key into this file. (For help generating SSH keys, see [GitHub's SSH key guide](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent))
@@ -121,7 +121,7 @@ runai submit -i ghcr.io/jkminder/dlab-runai-images/pytorch:master --pvc runai-dl
 
 I strongly recommend using the aliases provided by the installation script. See [RUNAI ALIASES](#runai-aliases). Should your shell not support aliases, use the [`submit.sh`](submit.sh) script (replace the binaries and ENVS in the file first).
 If you have successfully installed the runai aliases (check if `rl` works in your terminal), all of this gets much easier. Two examples: 
-- A single interactive gpu job for 2h: `rsg jobname -- sleep 2h` (`rsg` is short for `runai submit -i runai-dlab-{GASPAR_USERNAME}-scratch:/mnt --interactive --gpu 1.0`)
+- A single interactive gpu job for 2h: `rsg jobname -- sleep 2h` (`rsg` is short fo`r `runai submit -i runai-dlab-{GASPAR_USERNAME}-scratch:/mnt --interactive --gpu 1.0`)
 - An training job with 2 GPUs and 120G of RAM: `rs trainjobname --gpu 2.0 --memory 120G -- path/to/my/train/script --trainingargs` (`rs` is short for `runai submit -i runai-dlab-{GASPAR_USERNAME}-scratch:/mnt`
 
 These aliases also automatically deal with the correct name for the scratch partition.
@@ -144,7 +144,7 @@ There are the following GPUs available: V100, A100 and also H100. The default GP
 - H100: `--node-pools h100`
 - V100: `--node-pools v100`
 
-(Yes, you spottet it correctly, `--node-pools v100` is the default node pool and the a100 node pool is called default :shrug:) (edite
+(Yes, you spottet it correctly, `--node-pools v100` is the default node pool and the a100 node pool is called default :shrug:) 
 
 Different GPUs have different costs:
 A100 is 0.38CHF/h, V100 0.20CHF/h and H100 0.68CHF/h (09.11.24)
@@ -163,8 +163,6 @@ The installation script sets up several useful aliases. These are stored in the 
 - `rpf`: Portforward to your container
 - `rs`: Short for `runai submit` with predefined options (pytorch image, scratch mapped)
 - `rsg`: Short for `rs --gpu 1.0 --interactive`
-- `ric`: Switches the context to the IC cluster
-- `rrcp`: Switches the context to the RCP prod cluster
 
 ## Caveats
 
@@ -206,28 +204,21 @@ If the installation script doesn't work for you, or if you prefer to install man
 
 1. Download and install the RunAI CLI binaries:
    - For RCP prod: https://rcp-caas-prod.rcp.epfl.ch/cli/{os}
-   - For IC: https://ic-caas.epfl.ch/cli/{os}
    `{os}` is either `linux`, `debian` (mac os) or `windows`.
 
    After downloading, make the binaries executable and move them to a directory in your PATH (e.g., `/usr/local/bin`).
 
 2. Set up kubectl configurations:
-   - For IC cluster: Follow the instructions at [IC IT Docs - Connecting to CaaS](https://inside.epfl.ch/ic-it-docs/ic-cluster/caas/connecting/)
    - For RCP prod cluster: Follow the instructions at [RCP Wiki - CaaS Quick Start Prod](https://wiki.rcp.epfl.ch/en/home/CaaS/Quick_Start_Prod)
 
 3. If the aliases provided in the `.runai_aliases` file don't work for you, you can use the binary names directly:
    - For RCP prod: Use `runai-rcp-prod` instead of `runai`
-   - For IC: Use `runai-ic` instead of `runai`
 
    For example, to list jobs on the RCP prod cluster, you would use:
    ```
    runai-rcp-prod list
    ```
 
-   To submit a job on the IC cluster, you would use:
-   ```
-   runai-ic submit ...
-   ```
 
 Remember to replace the binary name in all the examples provided in this README with the appropriate binary for your cluster.
 
